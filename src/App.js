@@ -1,23 +1,42 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import socketIOClient from "socket.io-client";
+import { appendToSet } from '../src/redux/tweetsSlice';
 import './App.css';
+import Feed from "./components/Feed";
+import Sidebar from "./components/Sidebar";
+import Widgets from "./components/Widgets";
 
 function App() {
+  const dispatch = useDispatch();
+  const [list, setTweets] = useState([])
+  // useEffect(() => {
+    const socket = socketIOClient();
+    socket.on('connect', () => {
+      console.log('Connected to server...');
+    })
+    socket.on('tweet', (tweet) => {
+      const tweetData = {
+        id: tweet.data.id,
+        text: tweet.data.text,
+        displayName: tweet.includes.users[0].name,
+        username: `@${tweet.includes.users[0].username}`,
+        replies: tweet.data.public_metrics.reply_count,
+        retweets: tweet.data.public_metrics.retweet_count,
+        likes: tweet.data.public_metrics.like_count,
+      }
+      dispatch(appendToSet(tweetData))
+      const temp = [...list];
+      temp.push(tweetData);
+      setTweets(temp);
+    })
+  // }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Sidebar />
+      <Feed feeds={list}/>
+      <Widgets />
     </div>
   );
 }
