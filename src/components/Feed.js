@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector } from 'react-redux'
-import socketIOClient from "socket.io-client";
 import "./Feed.css";
 import Post from "./Post";
 import TweetBox from "./TweetBox";

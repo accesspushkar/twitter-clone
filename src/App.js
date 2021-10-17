@@ -10,7 +10,7 @@ import Widgets from "./components/Widgets";
 function App() {
   const dispatch = useDispatch();
   const [list, setTweets] = useState([])
-  // useEffect(() => {
+  useEffect(() => {
     const socket = socketIOClient();
     socket.on('connect', () => {
       console.log('Connected to server...');
@@ -30,7 +30,7 @@ function App() {
       temp.push(tweetData);
       setTweets(temp);
     })
-  // }, []);
+  }, []);
 
   return (
     <div className="app">

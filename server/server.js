@@ -77,8 +77,8 @@ const sleep = async (delay) => {
   return new Promise((resolve) => setTimeout(() => resolve(true), delay));
 };
 
-async function streamTweets(socket) {
-  const stream = await needle.get(streamURL, {
+function streamTweets(socket) {
+  const stream = needle.get(streamURL, {
     headers: {
       Authorization: `Bearer ${TOKEN}`,
     },
@@ -114,7 +114,7 @@ io.on('connection', async () => {
     process.exit(1)
   }
 
-  const filteredStream = await streamTweets(io)
+  const filteredStream = streamTweets(io)
 
   let timeout = 0
   filteredStream.on('timeout', () => {
