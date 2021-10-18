@@ -13,8 +13,8 @@ export const tweetsSlice = createSlice({
       state.value += 1
     },
     appendToSet: (state, action) => {
-      const old = [...state.tweetsData]
-      old.concat(action.payload);
+      const old = state.tweetsData;
+      old.push(action.payload);
       state.tweetsData = old;
     },
     updateSearchText: (state, action) => {
