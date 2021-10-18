@@ -10,6 +10,14 @@ import Widgets from "./components/Widgets";
 function App() {
   const dispatch = useDispatch();
   const [list, setTweets] = useState([])
+
+  const saveTweet = (tweet) => {
+      dispatch(appendToSet(tweet))
+      const temp = list;
+      temp.push(tweet);
+      setTweets(temp);
+  } 
+
   useEffect(() => {
     const socket = socketIOClient();
     socket.on('connect', () => {
@@ -25,10 +33,7 @@ function App() {
         retweets: tweet.data.public_metrics.retweet_count,
         likes: tweet.data.public_metrics.like_count,
       }
-      dispatch(appendToSet(tweetData))
-      const temp = [...list];
-      temp.push(tweetData);
-      setTweets(temp);
+      saveTweet(tweetData);
     })
   }, []);
 
