@@ -5,12 +5,14 @@ import "./Feed.css";
 import Post from "./Post";
 import TweetBox from "./TweetBox";
 import Spinner from "./Spinner";
+import { Button } from "@material-ui/core";
 
 function Feed() {
   const limit = 10;
 
   const tweetsData = useSelector((state) => state.tweets.tweetsData)
   const [isLoading, setLoading] = useState(true);
+  const [loadMore, setLoadMore] = useState(false);
   const [page, setPage] = useState(1);
   const [tweetsList, setList] = useState([]);
 
@@ -21,6 +23,7 @@ function Feed() {
     const realSet = tweetsList;
     const readySet = realSet.concat(newSet);
     setList(readySet);
+    setLoadMore(false);
   };
 
   useEffect(() => {
@@ -30,6 +33,11 @@ function Feed() {
       const realSet = tweetsList;
       const readySet = realSet.concat(newSet);
       setList(readySet);
+      setLoadMore(false);
+    }
+    let currentPage = page;
+    if (tweetsData.length > (++currentPage * limit) && tweetsData.length % 10 === 0) {
+      setLoadMore(true); 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tweetsData])
@@ -53,7 +61,13 @@ function Feed() {
               likes={tweet.likes}
         />
         ))
-
+      )}
+      {loadMore ? (
+        <Button variant="outlined" onClick={loadNewSet} className="sidebar__tweet" fullWidth>
+          Load More
+        </Button>
+      ) : (
+        ''
       )}
     </div>
   );
