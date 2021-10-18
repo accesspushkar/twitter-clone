@@ -6,24 +6,33 @@ import Post from "./Post";
 import TweetBox from "./TweetBox";
 import Spinner from "./Spinner";
 
-function Feed({feeds}) {
-  const tweetsData = useSelector((state) => state.tweets.tweetsData)
+function Feed() {
+  const limit = 10;
 
-  const [page, setPage] = useState(0);
-  const [tweetsList, setList] = useState(feeds);
+  const tweetsData = useSelector((state) => state.tweets.tweetsData)
+  const [isLoading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [tweetsList, setList] = useState([]);
 
   const loadNewSet = () => {
     let currentPage = page;
     setPage(++currentPage);
+    const newSet = tweetsData.slice((page -1) * limit, page * limit);
+    const realSet = tweetsList;
+    const readySet = realSet.concat(newSet);
+    setList(readySet);
   };
 
   useEffect(() => {
-    const limit = 10;
-    const newSet = tweetsData.slice((page -1) * limit, (page * limit) - 1);
-    const realSet = tweetsList;
-    realSet.concat(newSet);
-    setList(realSet);
-  }, [page, tweetsData, tweetsList])
+    if (tweetsData.length === 10) {
+      setLoading(false);
+      const newSet = tweetsData.slice((page -1) * limit, page * limit);
+      const realSet = tweetsList;
+      const readySet = realSet.concat(newSet);
+      setList(readySet);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tweetsData])
 
   return (
     <div className="feed">
@@ -31,7 +40,10 @@ function Feed({feeds}) {
         <h2>Home</h2>
       </div>
       <TweetBox />
-      {feeds.map((tweet) => (
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        tweetsList?.map((tweet) => (
         <Post key={tweet.id}
               displayName={tweet.displayName} 
               userName={tweet.userName}
@@ -40,7 +52,9 @@ function Feed({feeds}) {
               retweets={tweet.retweets}
               likes={tweet.likes}
         />
-      ))}
+        ))
+
+      )}
     </div>
   );
 }

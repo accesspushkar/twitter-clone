@@ -40,7 +40,7 @@ function App() {
   return (
     <div className="app">
       <Sidebar />
-      <Feed feeds={list}/>
+      <Feed />
       <Widgets />
     </div>
   );
